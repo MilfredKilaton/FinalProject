@@ -50,23 +50,32 @@ void printCenteredColored(char text[], int textColor, int bgColor);
 // The main flow of function
 int main() {
     setConsoleWidth(80);
+    // These variables holds the values of the key at the main menu.
     int enter, keys;
     int choice = 1; 
+    
+    // These variables holds the value of the key at the sort options in choice 2.
     int keyUD;
     int enter2 = 0;
     int choice2 = 1;
+
+    // These variables are
     char sortStudent;
     int validation = 0;
 
+    // The two call functions are to display and highlight the first choice of the main menu to inform the user that the default is the first choice.
     mainmenu();
     option1();
 
+    // This part reads the value of the key that was pressed by the user. The following keys that are recognized are only ENTER key, UP arrow key, and DOWN arrow key.  
     while(1) {
         enter = getch();
 
         if (enter == 0 || enter == 0xE0) {
             keys = getch();
 
+            // These increments and decrement the choice value to inform the following switch function on which option will be highlighted
+            // It also limits the choice from 1 to 5
             switch(keys) {
                 case 72: // UP
                     choice--;
@@ -78,8 +87,12 @@ int main() {
                     break;
             }
 
+            // Re-display the main menu again to avoid seeing only the highlighted parts.
             mainmenu();
+
+            // It'll depend on the variable choice on which call function to run.
             switch(choice) {
+                // The following call functions are to highlight the options.
                 case 1: option1(); break;
                 case 2: option2(); break;
                 case 3: option3(); break;
@@ -87,19 +100,21 @@ int main() {
                 case 5: option5(); break;
             }
         } else {
+
+            // After the user pressed the ENTER key, it'll run depending on what is the value of the choice
             if(enter == 13) { // ENTER
                 switch(choice) {
                     case 1: addStudent(); break;
 
                     case 2:
+                    // This function checks the global array if there is any data and stops the user from going further
                     if (totalstudents < 1) {
                         noData(); 
                         break;
                     }
-
-                    gotoxy(0, 0);
                     Ioptions();
                     Ioption1();
+
                     while (1) {
                         enter2 = getch();
                         if (enter2 == 0 || enter2 == 0xE0) {
@@ -169,6 +184,7 @@ int main() {
                     case 5: exit(0); break;
                 }
 
+                choice2 = 1;
                 getch();
                 mainmenu();
                 switch(choice) {
@@ -284,14 +300,17 @@ void addStudent() {
 
     validation = 0;
     while(validation == 0) {
-        printf("Gender (M/F): ");
+        printf("Gender (M/F)\n");
         checker = getch();
+
         if (checker=='M'||checker=='m') { 
             sprintf(gender[totalstudents],"Male"); 
+            printf("Your choice is Male");
             validation=1; 
         }
         else if (checker=='F'||checker=='f') { 
             sprintf(gender[totalstudents],"Female"); 
+            printf("Your choice is Female");
             validation=1; 
         }
         else {
