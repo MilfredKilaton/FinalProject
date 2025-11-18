@@ -23,7 +23,7 @@ char subjects[3][10] = {"Math", "English", "Science"};
 // Declaring necessary functions
 void separator();
 void mainmenu();
-void viewStudents(sortStudent);
+void viewStudents(char sortStudent);
 void addStudent();
 void searchStudent();
 void computeGrades();
@@ -335,7 +335,7 @@ void addStudent() {
     printf("\n\nStudent added successfully!\n");
 }
 
-void viewStudents(sortStudent) {
+void viewStudents(char sortStudent) {
     system("cls");
     
     sortStudents(sortStudent);
@@ -582,6 +582,9 @@ void option5() {
 */
 
 void Ioptions() {
+    system("cls");
+    gotoxy(0, 0);
+    printf("Sort by...");
     gotoxy(0, 1);
     printf("(N = Name | I = ID | G = Gender | A = Age)");
 }
