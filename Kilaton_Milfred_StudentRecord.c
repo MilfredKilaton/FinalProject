@@ -23,7 +23,7 @@ char subjects[3][10] = {"Math", "English", "Science"};
 // Declaring necessary functions
 void separator();
 void mainmenu();
-void viewStudents(char sortStudent);
+void viewStudents();
 void addStudent();
 void searchStudent();
 void computeGrades();
@@ -107,62 +107,11 @@ int main() {
                     case 1: addStudent(); break;
 
                     case 2:
-                    // This function checks the global array if there is any data and stops the user from going further
                     if (totalstudents < 1) {
                         noData(); 
                         break;
                     }
-                    Ioptions();
-                    Ioption1();
-
-                    while (1) {
-                        enter2 = getch();
-                        if (enter2 == 0 || enter2 == 0xE0) {
-                            keyUD = getch();
-
-                            switch (keyUD) {
-                                case 75: // Left arrow key
-                                choice2--;
-                                if (choice2 < 1) choice2 = 4; 
-                                break;
-                                case 77: // Right arrow key
-                                choice2++;
-                                if (choice2 > 4) choice2 = 1;
-                                break;
-                            }
-                    
-                            Ioptions();
-                            switch (choice2) {
-                                case 1: Ioption1(); break;
-                                case 2: Ioption2(); break;
-                                case 3: Ioption3(); break;
-                                case 4: Ioption4(); break;
-                            }
-                        }
-                        else {
-                            if (enter2 == 13 || enter2 == 0x0D) {
-                                switch (choice2) {
-                                    case 1:
-                                    sortStudent = 'N';
-                                    break;
-                            
-                                    case 2:
-                                    sortStudent = 'I';
-                                    break;
-                            
-                                    case 3:
-                                    sortStudent = 'G';
-                                    break;
-                            
-                                    case 4:
-                                    sortStudent = 'A';
-                                    break;
-                                }
-                                break;
-                            }
-                        }
-                    }
-                    viewStudents(sortStudent);
+                    viewStudents();
                     break;
 
                     case 3:
@@ -354,8 +303,62 @@ void addStudent() {
     printf("\n\nStudent added successfully!\n");
 }
 
-void viewStudents(char sortStudent) {
+
+void viewStudents() {
     system("cls");
+    int enter, key;
+    int choice;
+    char sortStudent;
+
+    Ioptions();
+    Ioption1();
+
+    while (1) {
+        enter = getch();
+        if (enter == 0 || enter == 0xE0) {
+            key = getch();
+            switch (key) {
+                case 75: // Left arrow key
+                choice--;
+                if (choice < 1) choice = 4; 
+                break;
+                case 77: // Right arrow key
+                choice++;
+                if (choice > 4) choice = 1;
+                break;
+            }
+    
+            Ioptions();
+            switch (choice) {
+                case 1: Ioption1(); break;
+                case 2: Ioption2(); break;
+                case 3: Ioption3(); break;
+                case 4: Ioption4(); break;
+            }
+        }
+        else {
+            if (enter == 13 || enter == 0x0D) {
+                switch (choice) {
+                    case 1:
+                    sortStudent = 'N';
+                    break;
+            
+                    case 2:
+                    sortStudent = 'I';
+                    break;
+            
+                    case 3:
+                    sortStudent = 'G';
+                    break;
+            
+                    case 4:
+                    sortStudent = 'A';
+                    break;
+                }
+                break;
+            }
+        }
+    }
     
     sortStudents(sortStudent);
     for (int i = 0; i < totalstudents; i++) {
@@ -532,7 +535,19 @@ void sortStudents(char sortKey) {
                     sprintf(status[j + 1][k], temp_str);
                 }
 
-                // Swapping firstgrades and secondgrades is similar using nested loops.
+                // To wap first semester grades
+                for (int s = 0; s < 3; s++) {
+                    float temp = firstgrades[j][s];
+                    firstgrades[j][s] = firstgrades[j + 1][s];
+                    firstgrades[j + 1][s] = temp;
+                }
+
+                // To swap second semester grades
+                for (int s = 0; s < 3; s++) {
+                    float temp = secondgrades[j][s];
+                    secondgrades[j][s] = secondgrades[j + 1][s];
+                    secondgrades[j + 1][s] = temp;
+                }
             }
         }
     }
@@ -599,7 +614,6 @@ void option5() {
 /* 
 (N = Name | I = ID | G = Gender | A = Age)
 */
-
 void Ioptions() {
     system("cls");
     gotoxy(0, 0);
