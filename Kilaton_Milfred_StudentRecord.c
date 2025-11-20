@@ -183,6 +183,9 @@ void mainmenu() {
     printCenteredColored("| 4. Compute Average                   |");
     printCenteredColored("| 5. Exit                              |");
     printCenteredColored("|**************************************|");
+    printCenteredColored("Press ENTER key to proceed.");
+    printCenteredColored("Press arrow UP to scroll up.");
+    printCenteredColored("Press arrow DOWN to scroll down.");
 }
 
 
