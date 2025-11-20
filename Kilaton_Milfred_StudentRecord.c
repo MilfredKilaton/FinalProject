@@ -45,22 +45,16 @@ void Ioption4();
 void color(int textColor, int bgColor);
 void gotoxy(int x, int y);
 void setConsoleWidth(int width);
-void printCenteredColored(char text[], int textColor, int bgColor);
+void printCenteredColored(char text[]);
 
 // The main flow of function
 int main() {
-    setConsoleWidth(80);
-    // These variables holds the values of the key at the main menu.
+    setConsoleWidth(80); // Sets the width of the console to 80 characters.
+
     int enter, keys;
-    int choice = 1; 
-    
-    // These variables holds the value of the key at the sort options in choice 2.
-    int keyUD;
-    int enter2 = 0;
-    int choice2 = 1;
+    int choice = 1;
 
     // These variables are
-    char sortStudent;
     int validation = 0;
 
     // The two call functions are to display and highlight the first choice of the main menu to inform the user that the default is the first choice.
@@ -71,6 +65,7 @@ int main() {
     while(1) {
         enter = getch();
 
+        // Checks if the return type of 'enter = getch()' isn't 13 OR when the user pressed an extended key. Ergo, the arrow UP and DOWN keys.
         if (enter == 0 || enter == 0xE0) {
             keys = getch();
 
@@ -100,17 +95,18 @@ int main() {
                 case 5: option5(); break;
             }
         } else {
-
             // After the user pressed the ENTER key, it'll run depending on what is the value of the choice
             if(enter == 13) { // ENTER
                 switch(choice) {
                     case 1: addStudent(); break;
 
                     case 2:
+                    // When there's no student that have yet to be added, it'll call the noData function to inform the user
                     if (totalstudents < 1) {
                         noData(); 
                         break;
                     }
+
                     viewStudents();
                     break;
 
@@ -130,12 +126,13 @@ int main() {
                     computeGrades();
                     break;
 
-                    case 5: exit(0); break;
+                    case 5: return 0;
                 }
 
-                choice2 = 1;
-                getch();
+                
+                getch(); // Waits for the user to press any key before proceeding to display the main menu and clear the screen
                 mainmenu();
+
                 switch(choice) {
                     case 1: option1(); break;
                     case 2: option2(); break;
@@ -146,22 +143,23 @@ int main() {
             }
         }
     }
-    return 0;
+
+    // There's no need to put return function since the whole program will end if user chose option 5.
 }
 
 // Function to display the main menu at the middle and to limit the colors to be just in the middle
-void printCenteredColored(char text[], int textColor, int bgColor) {
+void printCenteredColored(char text[]) {
     int width = 80;
     int len = strlen(text);
     int padding = (width - len) / 2;
 
-    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+    color(7, 0);
     for(int i = 0; i < padding; i++) printf(" ");
 
-    color(textColor, bgColor);
+    color(0, 7);
     printf("%s\n", text);
 
-    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+    color(7, 0);
 }
 
 // Function to display the main menu
@@ -174,19 +172,17 @@ void mainmenu() {
 
 
     gotoxy(0, startY);
-    color(0, 7);
-    printCenteredColored("|**************************************|", 0, 7);
-    printCenteredColored("|    STUDENT RECORD MANAGEMENT SYSTEM  |", 0, 7);
-    printCenteredColored("|**************************************|", 0, 7);
-    printCenteredColored("|              MAIN MENU               |", 0, 7);
-    printCenteredColored("|**************************************|", 0, 7);
-    printCenteredColored("| 1. Add Students                      |", 0, 7);
-    printCenteredColored("| 2. View Students                     |", 0, 7);
-    printCenteredColored("| 3. Search Student                    |", 0, 7);
-    printCenteredColored("| 4. Compute Average                   |", 0, 7);
-    printCenteredColored("| 5. Exit                              |", 0, 7);
-    printCenteredColored("|**************************************|", 0, 7);
-    color(7, 0);
+    printCenteredColored("|**************************************|");
+    printCenteredColored("|    STUDENT RECORD MANAGEMENT SYSTEM  |");
+    printCenteredColored("|**************************************|");
+    printCenteredColored("|              MAIN MENU               |");
+    printCenteredColored("|**************************************|");
+    printCenteredColored("| 1. Add Students                      |");
+    printCenteredColored("| 2. View Students                     |");
+    printCenteredColored("| 3. Search Student                    |");
+    printCenteredColored("| 4. Compute Average                   |");
+    printCenteredColored("| 5. Exit                              |");
+    printCenteredColored("|**************************************|");
 }
 
 
@@ -204,9 +200,9 @@ void addStudent() {
     char checker;
     char checker2[10] = "";
     int validation;
-    float firstsem;
-    float secondsem;
+    float firstsem, secondsem;
     int validation2;
+    float firstsum = 0, secondsum = 0;
 
     if (totalstudents >= MAX) {
         printf("Student list is already full!\n");
@@ -252,12 +248,12 @@ void addStudent() {
         printf("Gender (M/F)\n");
         checker = getch();
 
-        if (checker=='M'||checker=='m') { 
+        if (checker == 'M'||checker== 'm') { 
             sprintf(gender[totalstudents],"Male"); 
             printf("Your choice is Male");
             validation=1; 
         }
-        else if (checker=='F'||checker=='f') { 
+        else if (checker == 'F'||checker == 'f') { 
             sprintf(gender[totalstudents],"Female"); 
             printf("Your choice is Female");
             validation=1; 
@@ -267,8 +263,6 @@ void addStudent() {
         }
     }
     
-
-    float firstsum=0, secondsum=0;
     printf("\nFirst semester grades:\n");
     for(i = 0; i < 3; i++) {
         printf("%s: ", subjects[i]);
@@ -283,8 +277,8 @@ void addStudent() {
         secondsum += secondgrades[totalstudents][i];
     }
 
-    average[totalstudents][0] = firstsum / 3;   // first semester average
-    average[totalstudents][1] = secondsum / 3;  // second semester average
+    average[totalstudents][0] = firstsum / 3;
+    average[totalstudents][1] = secondsum / 3;
 
     if (average[totalstudents][0] > 74.5) {
         sprintf(status[totalstudents][0], "Passed");
@@ -306,15 +300,17 @@ void addStudent() {
 
 void viewStudents() {
     system("cls");
-    int enter, key;
+    int enter;
+    int key;
     int choice;
-    char sortStudent;
+    int sortBy;
 
     Ioptions();
     Ioption1();
-
+                                    
     while (1) {
         enter = getch();
+
         if (enter == 0 || enter == 0xE0) {
             key = getch();
             switch (key) {
@@ -327,7 +323,7 @@ void viewStudents() {
                 if (choice > 4) choice = 1;
                 break;
             }
-    
+        
             Ioptions();
             switch (choice) {
                 case 1: Ioption1(); break;
@@ -338,21 +334,21 @@ void viewStudents() {
         }
         else {
             if (enter == 13 || enter == 0x0D) {
-                switch (choice) {
+                    switch (choice) {
                     case 1:
-                    sortStudent = 'N';
+                    sortBy = 'N';
                     break;
-            
+                                
                     case 2:
-                    sortStudent = 'I';
+                    sortBy = 'I';
                     break;
-            
+                                
                     case 3:
-                    sortStudent = 'G';
+                    sortBy = 'G';
                     break;
-            
+                    
                     case 4:
-                    sortStudent = 'A';
+                    sortBy = 'A';
                     break;
                 }
                 break;
@@ -360,7 +356,10 @@ void viewStudents() {
         }
     }
     
-    sortStudents(sortStudent);
+    choice = 1;
+    
+    printf("\n");
+    sortStudents(sortBy);
     for (int i = 0; i < totalstudents; i++) {
         printf("Student No. %d . . .\n", i + 1);
         separator();
@@ -381,10 +380,11 @@ void searchStudent() {
     int i, j;
     char choice;
 
-    // Prompts the user to ch1 the unique id of a student.
+    // Prompts the user to enter the unique id of a student.
     printf("ID of the student: ");
     scanf("%s", &scanning);
 
+    // Checks the ID if it exists
     for (i = 0; i < totalstudents; i++) {
         if (strcmp(scanning, id[i]) == 0) {
             validation = 1;
@@ -392,6 +392,8 @@ void searchStudent() {
         }
     }
 
+    // If there's no student with the same inputted ID, it'll exit the function and return to the main
+    // This function will be ignored if the inputted ID does exist
     if (validation == 0) {
         printf("There's no student with an id of %s.\n\n", scanning);
         return;
@@ -435,65 +437,63 @@ void computeGrades() {
         return;
     }
 
+    // This function copies the string and combines them from lastname is firstname
     sprintf(fullname, "%s, %s", lastname[i], firstname[i]);
 
     separator();
     printf("| Student: %-34s| Gender: %-10s| Age: %-7d|\n", fullname, gender[i], age[i]);
     separator();
+
     printf("|%-10s|%-33s|%-33s|\n", "Subjects", "First Semester", "Second Semester");
     printf("|**********|*********************************|*********************************|\n");
+
     for(j = 0; j < 3; j++) {
         printf("|%-10s|%13s%-20.2f|%13s%-20.2f|\n", subjects[j], "", firstgrades[i][j], "", secondgrades[i][j]);
     }
     separator();
     printf("|Average   |%13s%-20.2f|%13s%-20.2f|\n", "", average[i][0], "", average[i][1]);
     separator();
-    printf("|Status    |%13s%-20s|%13s%-20s|\n", "", status[i][0], "", status[i][1]);
 
+    printf("|Status    |%13s%-20s|%13s%-20s|\n", "", status[i][0], "", status[i][1]);
     separator();
+
     printf("|ID: %-74s|\n", id[i]);
     separator();
 }
 
 // Function to sort students depending on the user's preference
 void sortStudents(char sortKey) {
-    int i, j;
+    int i, j, k;
 
     for (i = 0; i < totalstudents - 1; i++) {
         for (j = 0; j < totalstudents - i - 1; j++) {
             int shouldSwap = 0;
 
             // Determine if a swap is needed based on the sortKey
-            if (sortKey == 'N' || sortKey == 'n') { // Sort by First Name (Ascending)
+            if (sortKey == 'N') { // Sort by First Name (Ascending)
                 if (strcmp(firstname[j], firstname[j + 1]) > 0) {
                     shouldSwap = 1;
                 }
 
             } 
-            else if (sortKey == 'I' || sortKey == 'i') { // Sort by ID (Ascending)
+            else if (sortKey == 'I') { // Sort by ID (Ascending)
                 if (strcmp(id[j], id[j + 1]) > 0) {
                     shouldSwap = 1;
                 }
 
             } 
-            else if (sortKey == 'A' || sortKey == 'a') { // Sort by Age (Ascending)
+            else if (sortKey == 'A') { // Sort by Age (Ascending)
                 if (age[j] > age[j + 1]) {
                     shouldSwap = 1;
                 }
 
             } 
-            else if (sortKey == 'G' || sortKey == 'g') { // Sort by Gender (Ascending)
+            else if (sortKey == 'G') { // Sort by Gender (Ascending)
                  if (strcmp(gender[j], gender[j + 1]) > 0) {
                     shouldSwap = 1;
                 }
 
-            } 
-            else {
-                system("cls");
-                printf("Please, choose one from the 4 options.");
-                break;
             }
-
 
             if (shouldSwap == 1) {       
                 // Swap Integers (Age)
@@ -503,6 +503,8 @@ void sortStudents(char sortKey) {
 
                 // Swap Strings (Names, ID, Gender)
                 char temp_str[100]; // Use a large enough buffer for temp string swaps
+                float temp_avg;
+                float temp;
 
                 // Swaps the information of the students by ascending
                 sprintf(temp_str, firstname[j]);
@@ -522,36 +524,35 @@ void sortStudents(char sortKey) {
                 sprintf(gender[j + 1], temp_str);
 
                 // To swap the average
-                for(int k = 0 ; k < 2; k++) {
-                    float temp_avg = average[j][k];
+                for(k = 0 ; k < 2; k++) {
+                    temp_avg = average[j][k];
                     average[j][k] = average[j + 1][k];
                     average[j + 1][k] = temp_avg;
                 }           
 
                 // To swap the status
-                for(int k = 0; k < 2; k++) {
+                for(k = 0; k < 2; k++) {
                     sprintf(temp_str, status[j][k]);
                     sprintf(status[j][k], status[j + 1][k]);
                     sprintf(status[j + 1][k], temp_str);
                 }
 
-                // To wap first semester grades
-                for (int s = 0; s < 3; s++) {
-                    float temp = firstgrades[j][s];
-                    firstgrades[j][s] = firstgrades[j + 1][s];
-                    firstgrades[j + 1][s] = temp;
+                // To swap first semester grades
+                for (k = 0; k < 3; k++) {
+                    temp_avg = firstgrades[j][k];
+                    firstgrades[j][k] = firstgrades[j + 1][k];
+                    firstgrades[j + 1][k] = temp_avg;
                 }
 
                 // To swap second semester grades
-                for (int s = 0; s < 3; s++) {
-                    float temp = secondgrades[j][s];
-                    secondgrades[j][s] = secondgrades[j + 1][s];
-                    secondgrades[j + 1][s] = temp;
+                for (k = 0; k < 3; k++) {
+                    temp_avg = secondgrades[j][k];
+                    secondgrades[j][k] = secondgrades[j + 1][k];
+                    secondgrades[j + 1][k] = temp_avg;
                 }
             }
         }
     }
-    printf("\nSorting complete.\n");
 }
 
 // To manipulate the color of the text/background, the position of the cursor, or the width of the console.
@@ -653,6 +654,7 @@ void Ioption4() {
     color(7, 0);
 }
 
+// To inform the user that there's no data yet.
 void noData() {
     system("cls");
     printf("There's no data yet...");
